@@ -69,8 +69,8 @@ function M.setup(opts)
       return is_light
     end
 
-    local function save_theme_preference(opts)
-      local is_light_mode = opts.is_light_mode or false
+    local function save_theme_preference(local_opts)
+      local is_light_mode = local_opts.is_light_mode or false
       local file = io.open(M.cache_file, 'w')
       if file then
         file:write(is_light_mode and 'light' or 'dark')
