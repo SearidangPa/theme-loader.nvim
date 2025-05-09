@@ -1,5 +1,8 @@
 ## What is theme-loader?
 * Automatically loads themes based on the OS theme.
+* To speed up loading, it has a cache file that stores the last used theme. Then, in the background, 
+it checks the OS theme and loads a different theme if it is different from the last one.
+* Only works for mac and windows, because i don't have linux
 
 ## How I set it up
 ```lua 
