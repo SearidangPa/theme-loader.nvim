@@ -52,7 +52,7 @@ function M.setup(opts)
       return false
     end
     local is_light_mode = load_prev_theme_preference()
-    set_theme { is_light_mode = is_light_mode }
+    M.set_theme { is_light_mode = is_light_mode }
   end
 
   vim.schedule(function()
@@ -78,7 +78,7 @@ function M.setup(opts)
     end
 
     local is_light_mode_from_os = get_os_mode()
-    set_theme { is_light_mode = is_light_mode_from_os }
+    M.set_theme { is_light_mode = is_light_mode_from_os }
     save_theme_preference { is_light_mode = is_light_mode_from_os }
   end)
 end
