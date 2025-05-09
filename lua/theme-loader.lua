@@ -8,7 +8,7 @@ M.config = {
     lualine_theme = 'catppuccin-latte',
   },
   dark_theme = {
-    colorscheme = 'rose-pine-moon',
+    colorscheme = 'rose-pine',
     lualine_theme = 'rose-pine',
   },
 }
