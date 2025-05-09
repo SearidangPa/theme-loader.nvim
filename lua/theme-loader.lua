@@ -1,6 +1,8 @@
 local M = {}
 
-M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
+M.cache_dir = vim.fn.stdpath 'cache' .. '/theme_preference'
+M.light_cache_file = M.cache_dir .. '/light.txt'
+M.dark_cache_file = M.cache_dir .. '/dark.txt'
 
 M.config = {
   light_theme = {
@@ -26,7 +28,6 @@ function M.set_theme(opts)
     local ok, lualine = pcall(require, 'lualine')
     if ok then
       local theme_name = mode == 'light' and M.config.light_theme.lualine_theme or M.config.dark_theme.lualine_theme
-
       lualine.refresh {
         options = {
           theme = theme_name,
@@ -34,21 +35,21 @@ function M.set_theme(opts)
       }
     end
   end
+
   lualine_refresh()
 end
 
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+
+  vim.fn.mkdir(M.cache_dir, 'p')
+
   if not vim.g.colors_name then
     local function load_prev_theme_preference()
-      local file = io.open(M.cache_file, 'r')
-      if file then
-        local content = file:read()
-        file:close()
-        return content == 'light'
-      end
-      return false
+      local light_stat = vim.uv.fs_stat(M.light_cache_file)
+      return light_stat ~= nil
     end
+
     local is_light_mode = load_prev_theme_preference()
     M.set_theme { is_light_mode = is_light_mode }
   end
@@ -68,10 +69,19 @@ function M.setup(opts)
 
     local function save_theme_preference(local_opts)
       local is_light_mode = local_opts.is_light_mode or false
-      local file = io.open(M.cache_file, 'w')
-      if file then
-        file:write(is_light_mode and 'light' or 'dark')
-        file:close()
+
+      if is_light_mode then
+        vim.fn.writefile({}, M.light_cache_file)
+        local dark_stat = vim.loop.fs_stat(M.dark_cache_file)
+        if dark_stat then
+          vim.uv.fs_unlink(M.dark_cache_file)
+        end
+      else
+        vim.fn.writefile({}, M.dark_cache_file)
+        local light_stat = vim.loop.fs_stat(M.light_cache_file)
+        if light_stat then
+          vim.uv.fs_unlink(M.light_cache_file)
+        end
       end
     end
 
