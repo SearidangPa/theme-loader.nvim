@@ -1,22 +1,13 @@
 local M = {}
-
+M.light_colorscheme = 'catppuccin-latte'
+M.dark_colorscheme = 'rose-pine'
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
-
-M.config = {
-  light_theme = {
-    colorscheme = 'catppuccin-latte',
-  },
-  dark_theme = {
-    colorscheme = 'rose-pine',
-  },
-}
 
 local function load_theme_preference()
   local file = io.open(M.cache_file, 'r')
   if not file then
     return false
   end
-
   local content = file:read()
   file:close()
   return content == 'light'
@@ -27,7 +18,6 @@ function M.save_theme_preference(is_light_mode)
   if not file then
     return
   end
-
   file:write(is_light_mode and 'light' or 'dark')
   file:close()
 end
@@ -40,33 +30,28 @@ local function get_os_theme()
   end
 end
 
-function M.set_theme(opts)
-  opts = opts or {}
-  local is_light_mode = opts.is_light_mode or false
-  local theme_config = is_light_mode and M.config.light_theme or M.config.dark_theme
-
-  if vim.g.colors_name ~= theme_config.colorscheme then
-    vim.cmd.colorscheme(theme_config.colorscheme)
+function M.set_theme(is_light_mode)
+  local colorscheme = is_light_mode and M.light_colorscheme or M.dark_colorscheme
+  if vim.g.colors_name ~= colorscheme then
+    vim.cmd.colorscheme(colorscheme)
   end
 
   vim.defer_fn(function()
     local ok, lualine = pcall(require, 'lualine')
     if ok then
-      lualine.refresh { options = { theme = theme_config.colorscheme } }
+      lualine.refresh { options = { theme = colorscheme } }
     end
   end, 1000)
 end
 
-function M.setup(opts)
-  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
-
+function M.setup()
   if not vim.g.colors_name then
-    M.set_theme { is_light_mode = load_theme_preference() }
+    M.set_theme(load_theme_preference())
   end
 
   vim.defer_fn(function()
     local is_light_mode = get_os_theme()
-    M.set_theme { is_light_mode = is_light_mode }
+    M.set_theme(is_light_mode)
     M.save_theme_preference(is_light_mode)
   end, 1000)
 end
