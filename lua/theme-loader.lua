@@ -22,7 +22,7 @@ local function load_theme_preference()
   return content == 'light'
 end
 
-local function save_theme_preference(is_light_mode)
+function M.save_theme_preference(is_light_mode)
   local file = io.open(M.cache_file, 'w')
   if not file then
     return
@@ -65,7 +65,7 @@ function M.setup(opts)
   vim.schedule(function()
     local is_light_mode = get_os_theme()
     M.set_theme { is_light_mode = is_light_mode }
-    save_theme_preference(is_light_mode)
+    M.save_theme_preference(is_light_mode)
   end)
 end
 
