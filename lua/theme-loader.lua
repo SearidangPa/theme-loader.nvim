@@ -55,8 +55,6 @@ local function set_theme(opts)
   save_theme_preference { is_light_mode = is_light_mode }
 end
 
-vim.api.nvim_set_hl(0, 'Comment', { italic = true, fg = '#6e6a86' })
-
 if not vim.g.colors_name then
   local is_light_mode = load_prev_theme_preference()
   set_theme { is_light_mode = is_light_mode }
