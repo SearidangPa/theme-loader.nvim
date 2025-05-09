@@ -43,11 +43,10 @@ local function set_theme(opts)
 
   if is_light_mode and vim.g.colors_name ~= theme_config.colorscheme then
     vim.cmd.colorscheme(theme_config.colorscheme)
-    lualine_refresh(mode)
   elseif not is_light_mode and vim.g.colors_name ~= theme_config.colorscheme then
     vim.cmd.colorscheme(theme_config.colorscheme)
-    lualine_refresh(mode)
   end
+  vim.schedule(function() lualine_refresh(mode) end)
 end
 
 function M.setup(opts)
