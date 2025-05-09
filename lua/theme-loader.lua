@@ -18,9 +18,7 @@ function M.set_theme(opts)
   local mode = is_light_mode and 'light' or 'dark'
   local theme_config = is_light_mode and M.config.light_theme or M.config.dark_theme
 
-  if is_light_mode and vim.g.colors_name ~= theme_config.colorscheme then
-    vim.cmd.colorscheme(theme_config.colorscheme)
-  elseif not is_light_mode and vim.g.colors_name ~= theme_config.colorscheme then
+  if vim.g.colors_name ~= theme_config.colorscheme then
     vim.cmd.colorscheme(theme_config.colorscheme)
   end
 
@@ -29,7 +27,7 @@ function M.set_theme(opts)
     if ok then
       local theme_name = mode == 'light' and M.config.light_theme.lualine_theme or M.config.dark_theme.lualine_theme
 
-      lualine.setup {
+      lualine.refresh {
         options = {
           theme = theme_name,
         },
