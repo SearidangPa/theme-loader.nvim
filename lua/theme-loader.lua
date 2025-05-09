@@ -23,19 +23,6 @@ local function load_prev_theme_preference()
   return false
 end
 
-local function lualine_refresh(mode)
-  local ok, lualine = pcall(require, 'lualine')
-  if ok then
-    local theme_name = mode == 'light' and M.config.light_theme.lualine_theme or M.config.dark_theme.lualine_theme
-
-    lualine.setup {
-      options = {
-        theme = theme_name,
-      },
-    }
-  end
-end
-
 local function set_theme(opts)
   local is_light_mode = opts.is_light_mode or false
   local mode = is_light_mode and 'light' or 'dark'
@@ -45,6 +32,19 @@ local function set_theme(opts)
     vim.cmd.colorscheme(theme_config.colorscheme)
   elseif not is_light_mode and vim.g.colors_name ~= theme_config.colorscheme then
     vim.cmd.colorscheme(theme_config.colorscheme)
+  end
+
+  local function lualine_refresh(mode)
+    local ok, lualine = pcall(require, 'lualine')
+    if ok then
+      local theme_name = mode == 'light' and M.config.light_theme.lualine_theme or M.config.dark_theme.lualine_theme
+
+      lualine.setup {
+        options = {
+          theme = theme_name,
+        },
+      }
+    end
   end
   vim.schedule(function() lualine_refresh(mode) end)
 end
