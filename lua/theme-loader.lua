@@ -36,7 +36,7 @@ local function set_theme(opts)
       }
     end
   end
-  vim.schedule(function() lualine_refresh() end)
+  lualine_refresh()
 end
 
 function M.setup(opts)
