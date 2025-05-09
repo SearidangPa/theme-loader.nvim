@@ -5,11 +5,9 @@ M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 M.config = {
   light_theme = {
     colorscheme = 'catppuccin-latte',
-    lualine_theme = 'catppuccin-latte',
   },
   dark_theme = {
     colorscheme = 'rose-pine',
-    lualine_theme = 'rose-pine',
   },
 }
 
@@ -53,7 +51,7 @@ function M.set_theme(opts)
 
   local ok, lualine = pcall(require, 'lualine')
   if ok then
-    lualine.refresh { options = { theme = theme_config.lualine_theme } }
+    lualine.refresh { options = { theme = theme_config.colorscheme } }
   end
 end
 
