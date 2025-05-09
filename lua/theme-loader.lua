@@ -13,7 +13,7 @@ M.config = {
   },
 }
 
-local function set_theme(opts)
+function M.set_theme(opts)
   local is_light_mode = opts.is_light_mode or false
   local mode = is_light_mode and 'light' or 'dark'
   local theme_config = is_light_mode and M.config.light_theme or M.config.dark_theme
