@@ -82,16 +82,17 @@ function M.set_light_theme() set_theme { is_light_mode = true } end
 
 function M.set_dark_theme() set_theme { is_light_mode = false } end
 
-function M.setup(opts) M.config = vim.tbl_deep_extend('force', M.config, opts or {}) end
+function M.setup(opts)
+  M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+  if not vim.g.colors_name then
+    local is_light_mode = load_prev_theme_preference()
+    set_theme { is_light_mode = is_light_mode }
+  end
 
-if not vim.g.colors_name then
-  local is_light_mode = load_prev_theme_preference()
-  set_theme { is_light_mode = is_light_mode }
+  vim.schedule(function()
+    local is_light_mode_from_os = get_os_mode()
+    set_theme { is_light_mode = is_light_mode_from_os }
+  end)
 end
-
-vim.schedule(function()
-  local is_light_mode_from_os = get_os_mode()
-  set_theme { is_light_mode = is_light_mode_from_os }
-end)
 
 return M
