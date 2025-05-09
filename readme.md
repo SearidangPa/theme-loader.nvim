@@ -3,7 +3,6 @@
 * To speed up loading, it has a cache file that stores the last used theme. Then, in the background, 
 it checks the OS theme and loads a different theme if it is different from the last one. Because of this, the first time
 you load it after you change the OS theme, it will have a bit of jarring flash.
-
 * Only works for mac and windows, because i don't have linux
 
 
