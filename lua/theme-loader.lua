@@ -1,6 +1,7 @@
 local M = {}
 
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
+
 M.config = {
   light_theme = {
     colorscheme = 'catppuccin-latte',
