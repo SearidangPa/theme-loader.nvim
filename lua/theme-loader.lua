@@ -49,10 +49,12 @@ function M.set_theme(opts)
     vim.cmd.colorscheme(theme_config.colorscheme)
   end
 
-  local ok, lualine = pcall(require, 'lualine')
-  if ok then
-    lualine.refresh { options = { theme = theme_config.colorscheme } }
-  end
+  vim.defer_fn(function()
+    local ok, lualine = pcall(require, 'lualine')
+    if ok then
+      lualine.refresh { options = { theme = theme_config.colorscheme } }
+    end
+  end, 1000)
 end
 
 function M.setup(opts)
@@ -62,11 +64,11 @@ function M.setup(opts)
     M.set_theme { is_light_mode = load_theme_preference() }
   end
 
-  vim.schedule(function()
+  vim.defer_fn(function()
     local is_light_mode = get_os_theme()
     M.set_theme { is_light_mode = is_light_mode }
     M.save_theme_preference(is_light_mode)
-  end)
+  end, 1000)
 end
 
 return M
