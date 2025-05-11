@@ -44,16 +44,18 @@ function M.set_theme(is_light_mode)
   end, 1000)
 end
 
+function M.set_os_theme()
+  local is_light_mode = get_os_theme()
+  M.set_theme(is_light_mode)
+  M.save_theme_preference(is_light_mode)
+end
+
 function M.setup()
   if not vim.g.colors_name then
     M.set_theme(load_theme_preference())
   end
 
-  vim.defer_fn(function()
-    local is_light_mode = get_os_theme()
-    M.set_theme(is_light_mode)
-    M.save_theme_preference(is_light_mode)
-  end, 1000)
+  vim.defer_fn(M.set_os_theme, 1000)
 end
 
 return M
