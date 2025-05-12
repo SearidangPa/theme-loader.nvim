@@ -1,6 +1,6 @@
 local M = {}
-M.light_colorscheme = 'catppuccin-latte'
-M.dark_colorscheme = 'rose-pine'
+M.light_colorscheme = 'rose-pine-dawn'
+M.dark_colorscheme = 'rose-pine-moon'
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
 local function load_theme_preference()
