@@ -71,6 +71,7 @@ function M.toggle_os_theme()
   end
   local new_theme = get_os_theme() and 'Light' or 'Dark'
   M.set_theme(new_theme == 'Light')
+  M.save_theme_preference(new_theme == 'Light')
 
   local ok, fidget = pcall(require, 'fidget')
   if ok then
