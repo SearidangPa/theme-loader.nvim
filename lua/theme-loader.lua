@@ -70,7 +70,7 @@ function M.toggle_os_theme()
     vim.fn.system(script)
   end
   local new_theme = get_os_theme() and 'Light' or 'Dark'
-  M.set_theme(new_theme)
+  M.set_theme(new_theme == 'Light')
   vim.notify('OS Theme toggled to: ' .. new_theme)
 end
 
