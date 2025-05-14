@@ -1,6 +1,11 @@
 local M = {}
-M.light_colorscheme = 'rose-pine-dawn'
-M.dark_colorscheme = 'rose-pine-moon'
+
+-- Default values
+local defaults = {
+  light_theme = 'rose-pine-dawn',
+  dark_theme = 'rose-pine-moon',
+}
+
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
 local function load_theme_preference()
@@ -31,11 +36,10 @@ local function get_os_theme()
 end
 
 function M.set_theme(is_light_mode)
-  local colorscheme = is_light_mode and M.light_colorscheme or M.dark_colorscheme
+  local colorscheme = is_light_mode and M.light_theme or M.dark_theme
   if vim.g.colors_name ~= colorscheme then
     vim.cmd.colorscheme(colorscheme)
   end
-
   vim.defer_fn(function()
     local ok, lualine = pcall(require, 'lualine')
     if ok then
@@ -72,7 +76,6 @@ function M.toggle_os_theme()
   local new_theme = get_os_theme() and 'Light' or 'Dark'
   M.set_theme(new_theme == 'Light')
   M.save_theme_preference(new_theme == 'Light')
-
   local ok, fidget = pcall(require, 'fidget')
   if ok then
     fidget.notify('OS Theme toggled to: ' .. new_theme)
@@ -81,11 +84,14 @@ function M.toggle_os_theme()
   end
 end
 
-function M.setup()
+function M.setup(opts)
+  opts = opts or {}
+  M.light_theme = opts.light_theme or defaults.light_theme
+  M.dark_theme = opts.dark_theme or defaults.dark_theme
+
   if not vim.g.colors_name then
     M.set_theme(load_theme_preference())
   end
-
   vim.defer_fn(M.set_theme_based_on_os, 1000)
 end
 

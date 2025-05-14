@@ -16,12 +16,6 @@ return {
     config = function() require('theme-loader').setup() end,
   },
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    config = true,
-    lazy = true,
-  },
-  {
     'rose-pine/neovim',
     name = 'rose-pine',
     lazy = true,
@@ -39,16 +33,10 @@ return {
 ## Default Options
 
 ```lua
-{
-  light_theme = {
-    colorscheme = 'catppuccin-latte',
-    lualine_theme = 'catppuccin-latte',
+  {
+    light_theme= 'rose-pine-dawn',
+    dark_theme= 'rose-pine-moon',
   },
-  dark_theme = {
-    colorscheme = 'rose-pine',
-    lualine_theme = 'rose-pine',
-  },
-}
 ```
 
 
