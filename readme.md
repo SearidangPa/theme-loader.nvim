@@ -31,7 +31,7 @@ return {
 ```
 
 ## API 
-`toggle_os_theme()` will toggle the OS theme and nvim theme accordingly and save the current theme to a cache file
+* `toggle_os_theme()` will toggle the OS theme and nvim theme accordingly and save the current theme to a cache file
 
 
 ## Default Options
