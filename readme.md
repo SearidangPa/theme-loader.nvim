@@ -1,5 +1,6 @@
 ## What is theme-loader?
 * Automatically loads themes based on the OS theme.
+* API to toggle the OS theme and nvim theme accordingly.
 * To speed up loading, it has a cache file that stores the last used theme. Then, in the background, 
 it checks the OS theme and loads a different theme if it is different from the last one. Because of this, the first time
 you load it after you change the OS theme, it will have a bit of jarring flash.
@@ -45,4 +46,3 @@ return {
 
 
 ## Demo 
-https://github.com/user-attachments/assets/ab7f6f1a-1d34-4b5c-b499-033ea4efedec
