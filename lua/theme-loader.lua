@@ -28,7 +28,19 @@ end
 
 local function get_os_theme()
   if vim.fn.has 'win32' == 1 then
-    return not vim.fn.system('reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme'):match '0x0'
+    local handle = io.popen 'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme 2>nul'
+
+    if not handle then
+      return false
+    end
+    local result = handle:read '*a'
+    handle:close()
+
+    if result and result ~= '' then
+      return result:match '0x1' ~= nil
+    else
+      return false
+    end
   else
     return not vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null || echo "Light"'):match 'Dark'
   end
