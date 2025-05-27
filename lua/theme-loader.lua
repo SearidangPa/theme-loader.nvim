@@ -1,6 +1,5 @@
 local M = {}
 
--- Default values
 local defaults = {
   light_theme = 'rose-pine-dawn',
   dark_theme = 'rose-pine-moon',
@@ -55,9 +54,11 @@ function M.set_theme_based_on_os()
 end
 
 function M.toggle_os_theme()
+  local current_is_light = get_os_theme()
+  local new_is_light = not current_is_light
+
   if vim.fn.has 'win32' == 1 then
-    local is_light = get_os_theme()
-    local new_value = is_light and '0' or '1'
+    local new_value = new_is_light and '1' or '0'
     vim.fn.system(
       'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme /t REG_DWORD /d ' .. new_value .. ' /f'
     )
@@ -73,9 +74,11 @@ function M.toggle_os_theme()
     ]]
     vim.fn.system(script)
   end
-  local new_theme = get_os_theme() and 'Light' or 'Dark'
-  M.set_theme(new_theme == 'Light')
-  M.save_theme_preference(new_theme == 'Light')
+
+  local new_theme = new_is_light and 'Light' or 'Dark'
+  M.set_theme(new_is_light)
+  M.save_theme_preference(new_is_light)
+
   local ok, fidget = pcall(require, 'fidget')
   if ok then
     fidget.notify('OS Theme toggled to: ' .. new_theme)
@@ -88,7 +91,6 @@ function M.setup(opts)
   opts = opts or {}
   M.light_theme = opts.light_theme or defaults.light_theme
   M.dark_theme = opts.dark_theme or defaults.dark_theme
-
   if not vim.g.colors_name then
     M.set_theme(load_theme_preference())
   end
