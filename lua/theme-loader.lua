@@ -54,7 +54,6 @@ function M.set_theme(is_light_mode)
 
   local claude_theme = is_light_mode and 'light' or 'dark'
   vim.schedule(function()
-    vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}, function() end)
     local _, result = pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}):wait() end)
     if result.code ~= 0 then
       vim.notify('Claude command failed', vim.log.levels.WARN)
