@@ -117,7 +117,7 @@ function M.setup(opts)
     M.set_theme(load_theme_preference())
   end
 
-  vim.schedule(M.set_theme_based_on_os)
+  vim.defer_fn(M.set_theme_based_on_os, 0)
 end
 
 return M
