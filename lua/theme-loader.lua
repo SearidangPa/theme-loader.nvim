@@ -42,7 +42,11 @@ local function get_os_theme()
       return false
     end
   else
-    return not vim.fn.system('defaults read -g AppleInterfaceStyle 2>/dev/null || echo "Light"'):match 'Dark'
+    local result = vim.system({'defaults', 'read', '-g', 'AppleInterfaceStyle'}, {text = true}):wait()
+    if result.code ~= 0 then
+      return true
+    end
+    return not result.stdout:match 'Dark'
   end
 end
 
@@ -73,9 +77,10 @@ function M.toggle_os_theme()
 
   if vim.fn.has 'win32' == 1 then
     local new_value = new_is_light and '1' or '0'
-    vim.fn.system(
-      'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme /t REG_DWORD /d ' .. new_value .. ' /f'
-    )
+    vim.system({
+      'reg', 'add', 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
+      '/v', 'AppsUseLightTheme', '/t', 'REG_DWORD', '/d', new_value, '/f'
+    })
   else
     local script = [[
     osascript -e '
@@ -86,7 +91,13 @@ function M.toggle_os_theme()
       end tell
     '
     ]]
-    vim.fn.system(script)
+    vim.system({'osascript', '-e', [[
+      tell application "System Events"
+        tell appearance preferences
+          set dark mode to not dark mode
+        end tell
+      end tell
+    ]]})
   end
   local new_theme = new_is_light and 'Light' or 'Dark'
   M.set_theme(new_is_light)
