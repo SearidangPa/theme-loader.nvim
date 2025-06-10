@@ -53,13 +53,13 @@ function M.set_theme(is_light_mode)
   end
 
   local claude_theme = is_light_mode and 'light' or 'dark'
-  vim.schedule(function()
+  vim.defer_fn(function()
     pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}):wait() end)
     local ok, lualine = pcall(require, 'lualine')
     if ok then
       lualine.refresh { options = { theme = colorscheme } }
     end
-  end)
+  end, 1000)
 end
 
 function M.set_theme_based_on_os()
