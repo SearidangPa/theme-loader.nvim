@@ -90,13 +90,7 @@ function M.toggle_os_theme()
   local new_theme = new_is_light and 'Light' or 'Dark'
   M.set_theme(new_is_light)
   M.save_theme_preference(new_is_light)
-
-  local ok, fidget = pcall(require, 'fidget')
-  if ok then
-    fidget.notify('OS Theme toggled to: ' .. new_theme)
-  else
-    vim.notify('OS Theme toggled to: ' .. new_theme)
-  end
+  vim.notify('OS Theme toggled to: ' .. new_theme)
 end
 
 function M.setup(opts)
