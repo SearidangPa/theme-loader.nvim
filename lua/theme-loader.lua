@@ -60,7 +60,7 @@ function M.set_theme(is_light_mode)
     if ok then
       lualine.refresh { options = { theme = colorscheme } }
     end
-  end, 1000)
+  end, 0)
 end
 
 function M.set_theme_based_on_os()
