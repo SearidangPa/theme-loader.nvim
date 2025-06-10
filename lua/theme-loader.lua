@@ -1,10 +1,8 @@
 local M = {}
-
 local defaults = {
   light_theme = 'rose-pine-dawn',
   dark_theme = 'rose-pine-moon',
 }
-
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
 local function load_theme_preference()
@@ -29,13 +27,11 @@ end
 local function get_os_theme()
   if vim.fn.has 'win32' == 1 then
     local handle = io.popen 'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme 2>nul'
-
     if not handle then
       return false
     end
     local result = handle:read '*a'
     handle:close()
-
     if result and result ~= '' then
       return result:match '0x1' ~= nil
     else
@@ -55,14 +51,16 @@ function M.set_theme(is_light_mode)
   if vim.g.colors_name ~= colorscheme then
     vim.cmd.colorscheme(colorscheme)
   end
-  vim.defer_fn(function()
-    local claude_theme = is_light_mode and 'light' or 'dark'
-    vim.system { 'claude', 'config', 'set', '--global', 'theme', claude_theme }
-    local ok, lualine = pcall(require, 'lualine')
-    if ok then
-      lualine.refresh { options = { theme = colorscheme } }
-    end
-  end, 1000)
+
+  local claude_theme = is_light_mode and 'light' or 'dark'
+  vim.schedule(function()
+    vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}, function() end)
+  end)
+
+  local ok, lualine = pcall(require, 'lualine')
+  if ok then
+    lualine.refresh { options = { theme = colorscheme } }
+  end
 end
 
 function M.set_theme_based_on_os()
@@ -77,7 +75,7 @@ function M.toggle_os_theme()
 
   if vim.fn.has 'win32' == 1 then
     local new_value = new_is_light and '1' or '0'
-    vim.system {
+    vim.system({
       'reg',
       'add',
       'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize',
@@ -88,9 +86,9 @@ function M.toggle_os_theme()
       '/d',
       new_value,
       '/f',
-    }
+    }, {}, function() end)
   else
-    vim.system {
+    vim.system({
       'osascript',
       '-e',
       [[
@@ -100,11 +98,13 @@ function M.toggle_os_theme()
         end tell
       end tell
     ]],
-    }
+    }, {}, function() end)
   end
-  local new_theme = new_is_light and 'Light' or 'Dark'
+
   M.set_theme(new_is_light)
   M.save_theme_preference(new_is_light)
+
+  local new_theme = new_is_light and 'Light' or 'Dark'
   vim.notify('OS Theme toggled to: ' .. new_theme)
 end
 
@@ -112,10 +112,12 @@ function M.setup(opts)
   opts = opts or {}
   M.light_theme = opts.light_theme or defaults.light_theme
   M.dark_theme = opts.dark_theme or defaults.dark_theme
+
   if not vim.g.colors_name then
     M.set_theme(load_theme_preference())
   end
-  vim.defer_fn(M.set_theme_based_on_os, 1000)
+
+  vim.schedule(M.set_theme_based_on_os)
 end
 
 return M
