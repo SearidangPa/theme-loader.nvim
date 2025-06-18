@@ -49,7 +49,7 @@ end
 function M.set_theme(is_light_mode)
   local colorscheme = is_light_mode and M.light_theme or M.dark_theme
   local theme_changed = vim.g.colors_name ~= colorscheme
-  
+
   if theme_changed then
     vim.cmd.colorscheme(colorscheme)
   end
@@ -57,6 +57,8 @@ function M.set_theme(is_light_mode)
   vim.defer_fn(function()
     local claude_theme = is_light_mode and 'light' or 'dark'
     pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}) end)
+
+    pcall(function() return vim.system({ 'tmux', 'source-file', '~/.tmux.conf' }, {}) end)
 
     if theme_changed then
       local ok, lualine = pcall(require, 'lualine')
