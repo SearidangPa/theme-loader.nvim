@@ -65,12 +65,12 @@ function M.set_theme(is_light_mode)
       end
     end
   end, 0)
+  M.save_theme_preference(is_light_mode)
 end
 
 function M.set_theme_based_on_os()
   local is_light_mode = get_os_theme()
   M.set_theme(is_light_mode)
-  M.save_theme_preference(is_light_mode)
 end
 
 function M.toggle_os_theme()
@@ -106,7 +106,6 @@ function M.toggle_os_theme()
   end
 
   M.set_theme(new_is_light)
-  M.save_theme_preference(new_is_light)
 
   local new_theme = new_is_light and 'Light' or 'Dark'
   vim.notify('OS Theme toggled to: ' .. new_theme)
