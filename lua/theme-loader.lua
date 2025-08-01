@@ -24,7 +24,7 @@ function M.save_theme_preference(is_light_mode)
   file:close()
 end
 
-local function get_os_theme()
+M.is_os_theme_light = function()
   if vim.fn.has 'win32' == 1 then
     local handle = io.popen 'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme 2>nul'
     if not handle then
@@ -69,12 +69,12 @@ function M.set_theme(is_light_mode)
 end
 
 function M.set_theme_based_on_os()
-  local is_light_mode = get_os_theme()
+  local is_light_mode = M.is_os_theme_light()
   M.set_theme(is_light_mode)
 end
 
 function M.toggle_os_theme()
-  local current_is_light = get_os_theme()
+  local current_is_light = M.is_os_theme_light()
   local new_is_light = not current_is_light
 
   if vim.fn.has 'win32' == 1 then
