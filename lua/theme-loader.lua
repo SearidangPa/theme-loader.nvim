@@ -2,6 +2,7 @@ local M = {}
 local defaults = {
   light_theme = 'rose-pine-dawn',
   dark_theme = 'rose-pine-moon',
+  cached_is_light_mode = nil,
 }
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
@@ -22,6 +23,7 @@ function M.save_theme_preference(is_light_mode)
   end
   file:write(is_light_mode and 'light' or 'dark')
   file:close()
+  M.cached_is_light_mode = is_light_mode
 end
 
 M.is_os_theme_light = function()
