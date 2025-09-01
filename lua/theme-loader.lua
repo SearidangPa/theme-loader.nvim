@@ -6,6 +6,7 @@ local defaults = {
 }
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
+
 local function load_theme_preference()
   local file = io.open(M.cache_file, 'r')
   if not file then
@@ -67,6 +68,8 @@ function M.set_theme(is_light_mode)
       end
     end
   end, 0)
+
+  vim.o.background = is_light_mode and 'light' or 'dark'
   M.save_theme_preference(is_light_mode)
 end
 
