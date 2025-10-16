@@ -62,10 +62,7 @@ function M.set_theme(is_light_mode)
     pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}) end)
 
     if theme_changed then
-      local ok, lualine = pcall(require, 'lualine')
-      if ok then
-        lualine.refresh { options = { theme = colorscheme } }
-      end
+      vim.cmd('redrawstatus')
     end
   end, 0)
 
