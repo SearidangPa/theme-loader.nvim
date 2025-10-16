@@ -60,10 +60,6 @@ function M.set_theme(is_light_mode)
   vim.defer_fn(function()
     local claude_theme = is_light_mode and 'light' or 'dark'
     pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}) end)
-
-    if theme_changed then
-      vim.cmd('redrawstatus')
-    end
   end, 0)
 
   vim.o.background = is_light_mode and 'light' or 'dark'
