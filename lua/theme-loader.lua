@@ -66,11 +66,6 @@ function M.set_theme(is_light_mode)
   M.save_theme_preference(is_light_mode)
 end
 
-function M.set_theme_based_on_os()
-  local is_light_mode = M.is_os_theme_light()
-  M.set_theme(is_light_mode)
-end
-
 function M.toggle_os_theme()
   local current_is_light = M.is_os_theme_light()
   local new_is_light = not current_is_light
@@ -119,7 +114,8 @@ function M.setup(opts)
   end
 
   vim.schedule(function()
-    M.set_theme_based_on_os()
+    local is_light_mode = M.is_os_theme_light()
+    M.set_theme(is_light_mode)
   end)
 end
 
