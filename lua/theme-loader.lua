@@ -102,18 +102,6 @@ function M.setup(opts)
   opts = opts or {}
   M.light_theme = opts.light_theme or defaults.light_theme
   M.dark_theme = opts.dark_theme or defaults.dark_theme
-
-  local function is_light_theme_from_cached_file()
-    local file = io.open(M.cache_file, 'r')
-    if not file then
-      return false
-    end
-    local content = file:read()
-    file:close()
-    return content == 'light'
-  end
-  M.set_theme(is_light_theme_from_cached_file())
-
   vim.schedule(function()
     local is_light_mode = M.is_os_theme_light()
     M.set_theme(is_light_mode)
