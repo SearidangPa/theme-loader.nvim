@@ -56,14 +56,16 @@ function M.set_theme(is_light_mode)
   if theme_changed then
     vim.cmd.colorscheme(colorscheme)
   end
-
-  vim.defer_fn(function()
-    local claude_theme = is_light_mode and 'light' or 'dark'
-    pcall(function() return vim.system({ 'claude', 'config', 'set', '--global', 'theme', claude_theme }, {}) end)
-  end, 0)
-
   vim.o.background = is_light_mode and 'light' or 'dark'
   M.save_theme_preference(is_light_mode)
+
+  local claude_theme = is_light_mode and 'light' or 'dark'
+  pcall(function()
+    return vim.system({
+      'claude', 'config', 'set', '--global', 'theme',
+      claude_theme
+    }, {})
+  end)
 end
 
 function M.toggle_os_theme()
