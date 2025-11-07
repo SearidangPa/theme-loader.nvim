@@ -112,7 +112,9 @@ function M.setup(opts)
   M.dark_theme = opts.dark_theme or defaults.dark_theme
 
   if not vim.g.colors_name then
-    M.set_theme(load_theme_preference())
+    vim.schedule(function()
+      M.set_theme(load_theme_preference())
+    end)
   end
 
   vim.schedule(function()
