@@ -6,18 +6,6 @@ local defaults = {
 }
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
-
-
-function M.save_theme_preference(is_light_mode)
-  local file = io.open(M.cache_file, 'w')
-  if not file then
-    return
-  end
-  file:write(is_light_mode and 'light' or 'dark')
-  file:close()
-  M.cached_is_light_mode = is_light_mode
-end
-
 M.is_os_theme_light = function()
   if vim.fn.has 'win32' == 1 then
     local handle = io.popen 'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme 2>nul'
@@ -38,6 +26,16 @@ M.is_os_theme_light = function()
     end
     return not result.stdout:match 'Dark'
   end
+end
+
+function M.save_theme_preference(is_light_mode)
+  local file = io.open(M.cache_file, 'w')
+  if not file then
+    return
+  end
+  file:write(is_light_mode and 'light' or 'dark')
+  file:close()
+  M.cached_is_light_mode = is_light_mode
 end
 
 function M.set_theme(is_light_mode)
