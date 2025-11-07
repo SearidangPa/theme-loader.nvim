@@ -7,15 +7,6 @@ local defaults = {
 M.cache_file = vim.fn.stdpath 'cache' .. '/theme_preference.txt'
 
 
-local function load_theme_preference()
-  local file = io.open(M.cache_file, 'r')
-  if not file then
-    return false
-  end
-  local content = file:read()
-  file:close()
-  return content == 'light'
-end
 
 function M.save_theme_preference(is_light_mode)
   local file = io.open(M.cache_file, 'w')
@@ -115,11 +106,22 @@ function M.setup(opts)
   M.dark_theme = opts.dark_theme or defaults.dark_theme
 
   if not vim.g.colors_name then
-    M.set_theme(load_theme_preference())
+    local function is_light_theme_from_cached_file()
+      local file = io.open(M.cache_file, 'r')
+      if not file then
+        return false
+      end
+      local content = file:read()
+      file:close()
+      return content == 'light'
+    end
+    M.set_theme(is_light_theme_from_cached_file())
   end
 
-  local is_light_mode = M.is_os_theme_light()
-  M.set_theme(is_light_mode)
+  vim.schedule(function()
+    local is_light_mode = M.is_os_theme_light()
+    M.set_theme(is_light_mode)
+  end)
 end
 
 return M
