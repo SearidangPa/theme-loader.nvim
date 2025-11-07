@@ -56,15 +56,18 @@ function M.set_theme(is_light_mode)
   if theme_changed then
     vim.cmd.colorscheme(colorscheme)
   end
-  vim.o.background = is_light_mode and 'light' or 'dark'
-  M.save_theme_preference(is_light_mode)
 
-  local claude_theme = is_light_mode and 'light' or 'dark'
-  pcall(function()
-    return vim.system({
-      'claude', 'config', 'set', '--global', 'theme',
-      claude_theme
-    }, {})
+  vim.schedule(function()
+    vim.o.background = is_light_mode and 'light' or 'dark'
+    M.save_theme_preference(is_light_mode)
+
+    local claude_theme = is_light_mode and 'light' or 'dark'
+    pcall(function()
+      return vim.system({
+        'claude', 'config', 'set', '--global', 'theme',
+        claude_theme
+      }, {})
+    end)
   end)
 end
 
@@ -112,15 +115,11 @@ function M.setup(opts)
   M.dark_theme = opts.dark_theme or defaults.dark_theme
 
   if not vim.g.colors_name then
-    vim.schedule(function()
-      M.set_theme(load_theme_preference())
-    end)
+    M.set_theme(load_theme_preference())
   end
 
-  vim.schedule(function()
-    local is_light_mode = M.is_os_theme_light()
-    M.set_theme(is_light_mode)
-  end)
+  local is_light_mode = M.is_os_theme_light()
+  M.set_theme(is_light_mode)
 end
 
 return M
