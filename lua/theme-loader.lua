@@ -9,23 +9,19 @@ M.cache_file = vim.fn.stdpath("cache") .. "/theme_preference.txt"
 M.is_os_theme_light = function(callback)
     callback = vim.schedule_wrap(callback)
     if vim.fn.has("win32") == 1 then
-        vim.system(
-            {
-                "reg",
-                "query",
-                "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
-                "/v",
-                "AppsUseLightTheme",
-            },
-            { text = true },
-            function(result)
-                if result.code ~= 0 then
-                    callback(false)
-                    return
-                end
-                callback(result.stdout:match("0x1") ~= nil)
+        vim.system({
+            "reg",
+            "query",
+            "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+            "/v",
+            "AppsUseLightTheme",
+        }, { text = true }, function(result)
+            if result.code ~= 0 then
+                callback(false)
+                return
             end
-        )
+            callback(result.stdout:match("0x1") ~= nil)
+        end)
     else
         vim.system(
             { "defaults", "read", "-g", "AppleInterfaceStyle" },
@@ -42,6 +38,9 @@ M.is_os_theme_light = function(callback)
 end
 
 function M.save_theme_preference(is_light_mode)
+    if M.cached_is_light_mode == is_light_mode then
+        return
+    end
     local file = io.open(M.cache_file, "w")
     if not file then
         return
@@ -54,26 +53,25 @@ end
 function M.set_theme(is_light_mode)
     local colorscheme = is_light_mode and M.light_theme or M.dark_theme
     local theme_changed = vim.g.colors_name ~= colorscheme
+    local desired_background = is_light_mode and "light" or "dark"
+    local background_changed = vim.o.background ~= desired_background
+    local preference_changed = M.cached_is_light_mode ~= is_light_mode
+
+    if not (theme_changed or background_changed or preference_changed) then
+        return
+    end
 
     if theme_changed then
         vim.cmd.colorscheme(colorscheme)
     end
 
     vim.schedule(function()
-        vim.o.background = is_light_mode and "light" or "dark"
-        M.save_theme_preference(is_light_mode)
-
-        local claude_theme = is_light_mode and "light" or "dark"
-        pcall(function()
-            return vim.system({
-                "claude",
-                "config",
-                "set",
-                "--global",
-                "theme",
-                claude_theme,
-            }, {})
-        end)
+        if vim.o.background ~= desired_background then
+            vim.o.background = desired_background
+        end
+        if preference_changed then
+            M.save_theme_preference(is_light_mode)
+        end
     end)
 end
 
@@ -122,6 +120,11 @@ function M.setup(opts)
     opts = opts or {}
     M.light_theme = opts.light_theme or defaults.light_theme
     M.dark_theme = opts.dark_theme or defaults.dark_theme
+    if opts.sync_claude_theme == nil then
+        M.sync_claude_theme = defaults.sync_claude_theme
+    else
+        M.sync_claude_theme = opts.sync_claude_theme
+    end
 
     local function is_light_theme_from_cached_file()
         local file = io.open(M.cache_file, "r")
@@ -130,7 +133,9 @@ function M.setup(opts)
         end
         local content = file:read()
         file:close()
-        return content == "light"
+        local is_light_mode = content == "light"
+        M.cached_is_light_mode = is_light_mode
+        return is_light_mode
     end
     M.set_theme(is_light_theme_from_cached_file())
 
